@@ -1,15 +1,15 @@
 // Package deck handles the playing card functionality
 package deck
 
+import "fmt"
+
 // Suit represents the suit of a playing card (Hearts, Diamonds, etc.)
-// In Go, we can create our own types using the 'type' keyword
 type Suit string
 
 // Rank represents the rank of a playing card (Ace, Two, Three, etc.)
 type Rank string
 
 // These constants define the four possible suits in a deck
-// In Go, constants are declared using the 'const' keyword
 const (
 	Hearts   Suit = "Hearts"
 	Diamonds Suit = "Diamonds"
@@ -34,15 +34,54 @@ const (
 	King  Rank = "King"
 )
 
+// suitSymbols maps suits to their Unicode symbols
+var suitSymbols = map[Suit]string{
+	Hearts:   "♥",
+	Diamonds: "♦",
+	Clubs:    "♣",
+	Spades:   "♠",
+}
+
+// rankSymbols maps ranks to their short representations
+var rankSymbols = map[Rank]string{
+	Ace:   "A",
+	Two:   "2",
+	Three: "3",
+	Four:  "4",
+	Five:  "5",
+	Six:   "6",
+	Seven: "7",
+	Eight: "8",
+	Nine:  "9",
+	Ten:   "10",
+	Jack:  "J",
+	Queen: "Q",
+	King:  "K",
+}
+
 // Card represents a playing card with a suit and rank
-// In Go, we create structs to combine different types of data
 type Card struct {
-	Suit Suit // The suit of the card (Hearts, Diamonds, etc.)
-	Rank Rank // The rank of the card (Ace, Two, Three, etc.)
+	Suit Suit
+	Rank Rank
+}
+
+// NewCard creates a new card and validates the suit and rank
+// In Go, this is called a constructor function (though it's just a regular function)
+func NewCard(suit Suit, rank Rank) (Card, error) {
+	// Check if the suit is valid
+	if _, ok := suitSymbols[suit]; !ok {
+		return Card{}, fmt.Errorf("invalid suit: %s", suit)
+	}
+
+	// Check if the rank is valid
+	if _, ok := rankSymbols[rank]; !ok {
+		return Card{}, fmt.Errorf("invalid rank: %s", rank)
+	}
+
+	return Card{Suit: suit, Rank: rank}, nil
 }
 
 // Value returns the numerical value of the card in BlackJack
-// In Go, we can add methods to our types using this syntax: func (receiverName ReceiverType) MethodName()
 func (c Card) Value() int {
 	switch c.Rank {
 	case Ace:
@@ -66,12 +105,26 @@ func (c Card) Value() int {
 	case Nine:
 		return 9
 	default:
-		return 0 // This should never happen with valid cards
+		return 0
 	}
 }
 
+// IsFaceCard returns true if the card is a Jack, Queen, or King
+func (c Card) IsFaceCard() bool {
+	return c.Rank == Jack || c.Rank == Queen || c.Rank == King
+}
+
+// IsAce returns true if the card is an Ace
+func (c Card) IsAce() bool {
+	return c.Rank == Ace
+}
+
 // String returns a string representation of the card (e.g., "Ace of Hearts")
-// This is a special method in Go that's called when you print the card
 func (c Card) String() string {
 	return string(c.Rank) + " of " + string(c.Suit)
-} 
+}
+
+// ShortString returns a short representation of the card (e.g., "A♥")
+func (c Card) ShortString() string {
+	return rankSymbols[c.Rank] + suitSymbols[c.Suit]
+}
