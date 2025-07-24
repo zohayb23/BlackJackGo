@@ -14,6 +14,7 @@ a) Packages
    - package declaration
    - internal packages (private to project)
    - importing packages
+   - package organization
 
 b) Types
    Definition: Go's way of defining new types based on existing ones
@@ -24,6 +25,7 @@ b) Types
    - type declaration
    - underlying type
    - type safety
+   - custom types
 
 c) Constants
    Definition: Values that cannot be modified after declaration
@@ -36,6 +38,7 @@ c) Constants
    - const keyword
    - constant blocks
    - typed constants
+   - iota for enums
 
 2. COMPOSITE TYPES
 -----------------
@@ -51,6 +54,7 @@ a) Structs
    - struct fields
    - field types
    - struct initialization
+   - composition
 
 b) Slices
    Definition: Dynamic arrays that can grow or shrink
@@ -61,6 +65,7 @@ b) Slices
    - capacity (cap)
    - append function
    - make function
+   - slice operations
 
 c) Maps
    Definition: Key-value data structures
@@ -73,6 +78,7 @@ c) Maps
    - map initialization
    - map lookup
    - zero value (nil)
+   - existence checking
 
 3. FUNCTIONS AND METHODS
 -----------------------
@@ -86,6 +92,7 @@ a) Regular Functions
    - parameters
    - return values
    - multiple returns
+   - named returns
 
 b) Methods
    Definition: Functions attached to types
@@ -96,6 +103,7 @@ b) Methods
    - method set
    - pointer receivers
    - value receivers
+   - method chaining
 
 4. ERROR HANDLING
 ----------------
@@ -110,6 +118,7 @@ Key Terms:
 - multiple return values
 - error checking
 - fmt.Errorf
+- error propagation
 
 5. TESTING
 ----------
@@ -122,8 +131,56 @@ Key Terms:
 - testing.T
 - table-driven tests
 - test coverage
+- subtests
+- test helpers
 
-6. DESIGN PATTERNS
+6. INPUT/OUTPUT
+--------------
+
+Definition: Handling user input and output
+Example from our code:
+    reader := bufio.NewReader(os.Stdin)
+    input, _ := reader.ReadString('\n')
+Key Terms:
+- bufio.Reader
+- os.Stdin/Stdout
+- string formatting
+- ANSI escape codes
+- error handling
+
+7. STATE MANAGEMENT
+------------------
+
+Definition: Tracking and managing program state
+Example from our code:
+    type GameState int
+    const (
+        WaitingToStart GameState = iota
+        PlayerTurn
+        DealerTurn
+        RoundOver
+    )
+Key Terms:
+- state enumeration
+- state transitions
+- iota usage
+- encapsulation
+- getter methods
+
+8. USER INTERFACE
+----------------
+
+Definition: Command-line interface design
+Example from our code:
+    func getPlayerInput() string
+Key Terms:
+- command processing
+- user prompts
+- screen clearing
+- formatted output
+- input validation
+
+9. DESIGN PATTERNS
 -----------------
 
 a) Constructor Pattern
@@ -131,24 +188,25 @@ a) Constructor Pattern
    Example from our code:
        func NewDeck() *Deck
 
-b) String Representation
-   Definition: Method for converting type to string
+b) State Pattern
+   Definition: Object behavior depends on its state
    Example from our code:
-       func (c Card) String() string
+       - Game state management
+       - Player state transitions
 
-c) Encapsulation
-   Definition: Information hiding and data protection
+c) Command Pattern
+   Definition: Encapsulate requests as objects
    Example from our code:
-       - Internal package usage
-       - Unexported fields
+       - Command processing in main.go
 
 PROGRESS TRACKER
 ---------------
 [✓] Basic Go Setup
 [✓] Card Implementation
 [✓] Deck Implementation
-[ ] Player Implementation
-[ ] Game Logic
-[ ] CLI Interface
+[✓] Player Implementation
+[✓] Game Logic
+[✓] Game Rules
+[✓] Command-line Interface
 
-This document will be updated as we progress through the project with new concepts and implementations. 
+This document will continue to be updated as we add more features and learn new concepts. 
