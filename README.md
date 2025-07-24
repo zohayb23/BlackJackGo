@@ -22,22 +22,27 @@ This BlackJack implementation showcases:
   - Suit and rank representation
   - String formatting
   - Validation
+  - 100% test coverage
 - Deck implementation with:
   - Standard 52-card deck creation
   - Shuffling functionality
   - Card drawing
   - Remaining cards tracking
-- Comprehensive test coverage
+  - 100% test coverage
+- Player implementation with:
+  - Hand management
+  - State tracking (Playing, Standing, Busted, BlackJack)
+  - Card value calculation with Ace handling
+  - 97% test coverage
 
 ### In Progress 🚧
 
-- Player implementation
-- Game logic
+- Game logic implementation
 - Command-line interface
 
 ### Upcoming Features 📋
 
-- Betting system
+- Game rules implementation
 - Multiple players support
 - Game statistics
 - Save/load functionality
@@ -49,8 +54,10 @@ blackjack/
 ├── cmd/            # Command-line application entry point
 ├── internal/       # Private application code
 │   ├── deck/      # Card and deck implementations
+│   │   ├── card.go    # Card struct and methods
+│   │   └── deck.go    # Deck struct and methods
 │   ├── game/      # Game logic (upcoming)
-│   └── player/    # Player implementation (upcoming)
+│   └── player/    # Player implementation
 ├── pkg/           # Public packages (if any)
 └── docs/          # Documentation
 ```
@@ -64,8 +71,15 @@ blackjack/
 - Error handling
 - Slices and maps
 - Package organization
-- Testing
-- And more (see docs/LEARNING.txt)
+- Comprehensive testing
+- State management
+- String formatting
+
+### Testing Coverage
+
+- deck/card.go: 100% coverage
+- deck/deck.go: 100% coverage
+- player/player.go: 97% coverage
 
 ### Development Practices
 
@@ -100,9 +114,7 @@ go test ./...
 - See [docs/LEARNING.txt](docs/LEARNING.txt) for detailed Go concepts covered
 - More documentation will be added as the project progresses
 
-## Contributing
 
-This is a learning project, but suggestions and feedback are welcome!
 
 ## License
 
