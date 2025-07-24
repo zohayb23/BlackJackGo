@@ -12,10 +12,10 @@ type GameState int
 
 const (
 	// Game states
-	WaitingToStart GameState = iota
-	PlayerTurn
-	DealerTurn
-	RoundOver
+	WaitingToStart GameState = iota // Waiting for the game to start
+	PlayerTurn                      // Player's turn to act
+	DealerTurn                      // Dealer's turn to act
+	RoundOver                       // Round is complete
 )
 
 // Game represents a BlackJack game session
@@ -175,6 +175,11 @@ func (g *Game) GetResult() string {
 	default:
 		return "Push - It's a tie!"
 	}
+}
+
+// GetState returns the current game state
+func (g *Game) GetState() GameState {
+	return g.state
 }
 
 // String returns a string representation of the game state
