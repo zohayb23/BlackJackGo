@@ -187,6 +187,106 @@ func TestString(t *testing.T) {
 	}
 }
 
+// TestScoreTracking tests score tracking functionality
+func TestScoreTracking(t *testing.T) {
+	tests := []struct {
+		name           string
+		playerCards    []deck.Card
+		dealerCards    []deck.Card
+		expectedScore  Score
+		expectedResult string
+	}{
+		{
+			name: "Player wins with higher value",
+			playerCards: []deck.Card{
+				mustCreateCard(t, deck.Hearts, deck.Ten),
+				mustCreateCard(t, deck.Spades, deck.Nine),
+			},
+			dealerCards: []deck.Card{
+				mustCreateCard(t, deck.Diamonds, deck.Ten),
+				mustCreateCard(t, deck.Clubs, deck.Eight),
+			},
+			expectedScore:  Score{Wins: 1},
+			expectedResult: "Player wins!",
+		},
+		{
+			name: "Dealer wins with higher value",
+			playerCards: []deck.Card{
+				mustCreateCard(t, deck.Hearts, deck.Ten),
+				mustCreateCard(t, deck.Spades, deck.Seven),
+			},
+			dealerCards: []deck.Card{
+				mustCreateCard(t, deck.Diamonds, deck.Ten),
+				mustCreateCard(t, deck.Clubs, deck.Eight),
+			},
+			expectedScore:  Score{Losses: 1},
+			expectedResult: "Dealer wins!",
+		},
+		{
+			name: "Push with equal values",
+			playerCards: []deck.Card{
+				mustCreateCard(t, deck.Hearts, deck.Ten),
+				mustCreateCard(t, deck.Spades, deck.Eight),
+			},
+			dealerCards: []deck.Card{
+				mustCreateCard(t, deck.Diamonds, deck.Ten),
+				mustCreateCard(t, deck.Clubs, deck.Eight),
+			},
+			expectedScore:  Score{Pushes: 1},
+			expectedResult: "Push! It's a tie!",
+		},
+		{
+			name: "Player wins with BlackJack",
+			playerCards: []deck.Card{
+				mustCreateCard(t, deck.Hearts, deck.Ace),
+				mustCreateCard(t, deck.Spades, deck.King),
+			},
+			dealerCards: []deck.Card{
+				mustCreateCard(t, deck.Diamonds, deck.Ten),
+				mustCreateCard(t, deck.Clubs, deck.Eight),
+			},
+			expectedScore:  Score{Wins: 1},
+			expectedResult: "BlackJack! Player wins!",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			g := NewGame("TestPlayer")
+			g.state = RoundOver
+
+			// Set up player and dealer hands
+			for _, card := range tt.playerCards {
+				g.player.AddCard(card)
+			}
+			for _, card := range tt.dealerCards {
+				g.dealer.AddCard(card)
+			}
+
+			// Get result and check score
+			result := g.GetResult()
+			if result != tt.expectedResult {
+				t.Errorf("Expected result %q, got %q", tt.expectedResult, result)
+			}
+
+			score := g.GetScore()
+			if score != tt.expectedScore {
+				t.Errorf("Expected score %+v, got %+v", tt.expectedScore, score)
+			}
+		})
+	}
+}
+
+func TestScoreDisplay(t *testing.T) {
+	g := NewGame("TestPlayer")
+	g.score = Score{Wins: 2, Losses: 1, Pushes: 1}
+
+	output := g.String()
+	if !strings.Contains(output, "Session Score - Wins: 2, Losses: 1, Pushes: 1") {
+		t.Errorf("Score not displayed correctly in game state, got: %s", output)
+	}
+}
+
 // Helper function to create cards for testing
 func mustCreateCard(t *testing.T, suit deck.Suit, rank deck.Rank) deck.Card {
 	card, err := deck.NewCard(suit, rank)

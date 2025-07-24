@@ -18,12 +18,19 @@ const (
 	RoundOver                       // Round is complete
 )
 
+type Score struct {
+	Wins   int
+	Losses int
+	Pushes int
+}
+
 // Game represents a BlackJack game session
 type Game struct {
 	player *player.Player // The player
 	dealer *player.Player // The dealer
 	deck   *deck.Deck     // The game's deck
 	state  GameState      // Current game state
+	score  Score
 }
 
 // NewGame creates a new BlackJack game
@@ -33,6 +40,7 @@ func NewGame(playerName string) *Game {
 		dealer: player.NewPlayer("Dealer"),
 		deck:   deck.NewDeck(),
 		state:  WaitingToStart,
+		score:  Score{}, // Initialize score to zero
 	}
 
 	// Shuffle the deck
@@ -152,29 +160,39 @@ func (g *Game) DealerPlay() error {
 
 // GetResult returns the game result from the player's perspective
 func (g *Game) GetResult() string {
-	if g.state != RoundOver {
-		return "Round not over"
-	}
-
+	result := ""
 	playerValue := g.player.GetHandValue()
 	dealerValue := g.dealer.GetHandValue()
 
 	switch {
 	case g.player.State == player.Busted:
-		return "Player busted! Dealer wins!"
+		result = "Player busted! Dealer wins!"
+		g.score.Losses++
 	case g.dealer.State == player.Busted:
-		return "Dealer busted! Player wins!"
-	case g.player.HasBlackjack() && !g.dealer.HasBlackjack():
-		return "BlackJack! Player wins!"
-	case !g.player.HasBlackjack() && g.dealer.HasBlackjack():
-		return "Dealer has BlackJack! Dealer wins!"
+		result = "Dealer busted! Player wins!"
+		g.score.Wins++
+	case g.player.State == player.BlackJack && g.dealer.State != player.BlackJack:
+		result = "BlackJack! Player wins!"
+		g.score.Wins++
+	case g.dealer.State == player.BlackJack && g.player.State != player.BlackJack:
+		result = "Dealer has BlackJack! Dealer wins!"
+		g.score.Losses++
 	case playerValue > dealerValue:
-		return "Player wins!"
+		result = "Player wins!"
+		g.score.Wins++
 	case dealerValue > playerValue:
-		return "Dealer wins!"
+		result = "Dealer wins!"
+		g.score.Losses++
 	default:
-		return "Push - It's a tie!"
+		result = "Push! It's a tie!"
+		g.score.Pushes++
 	}
+	return result
+}
+
+// GetScore returns the current game score
+func (g *Game) GetScore() Score {
+	return g.score
 }
 
 // GetState returns the current game state
@@ -184,16 +202,15 @@ func (g *Game) GetState() GameState {
 
 // String returns a string representation of the game state
 func (g *Game) String() string {
-	dealerInfo := "Dealer: "
-	if g.state == RoundOver {
-		dealerInfo += g.dealer.String()
-	} else {
-		// Show only the first card during play
-		if len(g.dealer.Hand) > 0 {
-			dealerInfo += fmt.Sprintf("Shows %s (Hidden card)", g.dealer.Hand[0].String())
+	gameState := fmt.Sprintf("=== BLACKJACK ===\nGame State: %d\n", g.state)
+	dealerInfo := fmt.Sprintf("Dealer: %s\n", g.dealer)
+	if g.state != RoundOver {
+		// Hide dealer's second card during play
+		if len(g.dealer.Hand) > 1 {
+			dealerInfo = fmt.Sprintf("Dealer: Player: Dealer\nHand: %s, (Hidden card)\nValue: ?\n", g.dealer.Hand[0])
 		}
 	}
-
-	return fmt.Sprintf("Game State: %v\n%s\nPlayer: %s",
-		g.state, dealerInfo, g.player.String())
+	playerInfo := fmt.Sprintf("Player: %s\n", g.player)
+	scoreInfo := fmt.Sprintf("\nSession Score - Wins: %d, Losses: %d, Pushes: %d", g.score.Wins, g.score.Losses, g.score.Pushes)
+	return gameState + dealerInfo + playerInfo + scoreInfo
 }
