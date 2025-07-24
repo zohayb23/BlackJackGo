@@ -282,8 +282,13 @@ func TestScoreDisplay(t *testing.T) {
 	g.score = Score{Wins: 2, Losses: 1, Pushes: 1}
 
 	output := g.String()
-	if !strings.Contains(output, "Session Score - Wins: 2, Losses: 1, Pushes: 1") {
-		t.Errorf("Score not displayed correctly in game state, got: %s", output)
+	expectedScore := "Session Score - Wins: 2, Losses: 1, Pushes: 1"
+	if !strings.Contains(output, expectedScore) {
+		t.Errorf("Score not displayed correctly in game state.\nExpected to contain: %s\nGot: %s", expectedScore, output)
+	}
+
+	if strings.Contains(output, "=== BLACKJACK ===") {
+		t.Error("Game string should not contain the BlackJack title")
 	}
 }
 

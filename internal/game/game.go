@@ -202,7 +202,7 @@ func (g *Game) GetState() GameState {
 
 // String returns a string representation of the game state
 func (g *Game) String() string {
-	gameState := fmt.Sprintf("=== BLACKJACK ===\nGame State: %d\n", g.state)
+	gameState := fmt.Sprintf("Game State: %d\n", g.state)
 	dealerInfo := fmt.Sprintf("Dealer: %s\n", g.dealer)
 	if g.state != RoundOver {
 		// Hide dealer's second card during play
