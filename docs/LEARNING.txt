@@ -1,0 +1,154 @@
+GO CONCEPTS AND LEARNING DOCUMENTATION
+====================================
+
+This document tracks the Go concepts learned and implemented in the BlackJack project.
+
+1. BASIC GO CONCEPTS
+-------------------
+
+a) Packages
+   Definition: Packages are Go's unit of code organization and reuse
+   Example from our code:
+       package deck
+   Key Terms:
+   - package declaration
+   - internal packages (private to project)
+   - importing packages
+
+b) Types
+   Definition: Go's way of defining new types based on existing ones
+   Example from our code:
+       type Suit string
+       type Rank string
+   Key Terms:
+   - type declaration
+   - underlying type
+   - type safety
+
+c) Constants
+   Definition: Values that cannot be modified after declaration
+   Example from our code:
+       const (
+           Hearts   Suit = "Hearts"
+           Diamonds Suit = "Diamonds"
+       )
+   Key Terms:
+   - const keyword
+   - constant blocks
+   - typed constants
+
+2. COMPOSITE TYPES
+-----------------
+
+a) Structs
+   Definition: User-defined type that groups related data
+   Example from our code:
+       type Card struct {
+           Suit Suit
+           Rank Rank
+       }
+   Key Terms:
+   - struct fields
+   - field types
+   - struct initialization
+
+b) Slices
+   Definition: Dynamic arrays that can grow or shrink
+   Example from our code:
+       cards []Card
+   Key Terms:
+   - length (len)
+   - capacity (cap)
+   - append function
+   - make function
+
+c) Maps
+   Definition: Key-value data structures
+   Example from our code:
+       var suitSymbols = map[Suit]string{
+           Hearts: "♥",
+       }
+   Key Terms:
+   - key-value pairs
+   - map initialization
+   - map lookup
+   - zero value (nil)
+
+3. FUNCTIONS AND METHODS
+-----------------------
+
+a) Regular Functions
+   Definition: Reusable blocks of code
+   Example from our code:
+       func NewCard(suit Suit, rank Rank) (Card, error)
+   Key Terms:
+   - function declaration
+   - parameters
+   - return values
+   - multiple returns
+
+b) Methods
+   Definition: Functions attached to types
+   Example from our code:
+       func (c Card) Value() int
+   Key Terms:
+   - receiver
+   - method set
+   - pointer receivers
+   - value receivers
+
+4. ERROR HANDLING
+----------------
+
+Definition: Go's way of handling exceptional conditions
+Example from our code:
+    if _, ok := suitSymbols[suit]; !ok {
+        return Card{}, fmt.Errorf("invalid suit: %s", suit)
+    }
+Key Terms:
+- error interface
+- multiple return values
+- error checking
+- fmt.Errorf
+
+5. TESTING
+----------
+
+Definition: Go's built-in testing framework
+Example from our code:
+    func TestCardValue(t *testing.T)
+Key Terms:
+- test functions
+- testing.T
+- table-driven tests
+- test coverage
+
+6. DESIGN PATTERNS
+-----------------
+
+a) Constructor Pattern
+   Definition: Functions that create and initialize types
+   Example from our code:
+       func NewDeck() *Deck
+
+b) String Representation
+   Definition: Method for converting type to string
+   Example from our code:
+       func (c Card) String() string
+
+c) Encapsulation
+   Definition: Information hiding and data protection
+   Example from our code:
+       - Internal package usage
+       - Unexported fields
+
+PROGRESS TRACKER
+---------------
+[✓] Basic Go Setup
+[✓] Card Implementation
+[✓] Deck Implementation
+[ ] Player Implementation
+[ ] Game Logic
+[ ] CLI Interface
+
+This document will be updated as we progress through the project with new concepts and implementations. 
