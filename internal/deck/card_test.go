@@ -1,10 +1,11 @@
 package deck
 
-import "testing"
+import (
+	"testing"
+)
 
-// TestNewCard tests the NewCard constructor function
+// TestNewCard tests the creation of cards
 func TestNewCard(t *testing.T) {
-	// Test cases for NewCard
 	tests := []struct {
 		name        string
 		suit        Suit
@@ -12,9 +13,15 @@ func TestNewCard(t *testing.T) {
 		expectError bool
 	}{
 		{
-			name:        "Valid card",
+			name:        "Valid card - Ace of Hearts",
 			suit:        Hearts,
 			rank:        Ace,
+			expectError: false,
+		},
+		{
+			name:        "Valid card - Ten of Diamonds",
+			suit:        Diamonds,
+			rank:        Ten,
 			expectError: false,
 		},
 		{
@@ -29,24 +36,32 @@ func TestNewCard(t *testing.T) {
 			rank:        "InvalidRank",
 			expectError: true,
 		},
+		{
+			name:        "Empty suit",
+			suit:        "",
+			rank:        Ace,
+			expectError: true,
+		},
+		{
+			name:        "Empty rank",
+			suit:        Hearts,
+			rank:        "",
+			expectError: true,
+		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			card, err := NewCard(test.suit, test.rank)
 
-			// Check if we got an error when we expected one
-			if test.expectError && err == nil {
-				t.Error("Expected an error but didn't get one")
-			}
-
-			// Check if we got an error when we didn't expect one
-			if !test.expectError && err != nil {
-				t.Errorf("Didn't expect an error but got: %v", err)
-			}
-
-			// For valid cards, check the values
-			if err == nil {
+			if test.expectError {
+				if err == nil {
+					t.Error("Expected an error but didn't get one")
+				}
+			} else {
+				if err != nil {
+					t.Errorf("Didn't expect an error but got: %v", err)
+				}
 				if card.Suit != test.suit {
 					t.Errorf("Expected suit %v, got %v", test.suit, card.Suit)
 				}
@@ -58,7 +73,7 @@ func TestNewCard(t *testing.T) {
 	}
 }
 
-// TestCardValue tests the Value() method of Card
+// TestCardValue tests all possible card values
 func TestCardValue(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -71,14 +86,69 @@ func TestCardValue(t *testing.T) {
 			expected: 11,
 		},
 		{
-			name:     "Number card value",
-			card:     Card{Suit: Diamonds, Rank: Five},
+			name:     "King value",
+			card:     Card{Suit: Hearts, Rank: King},
+			expected: 10,
+		},
+		{
+			name:     "Queen value",
+			card:     Card{Suit: Hearts, Rank: Queen},
+			expected: 10,
+		},
+		{
+			name:     "Jack value",
+			card:     Card{Suit: Hearts, Rank: Jack},
+			expected: 10,
+		},
+		{
+			name:     "Ten value",
+			card:     Card{Suit: Hearts, Rank: Ten},
+			expected: 10,
+		},
+		{
+			name:     "Nine value",
+			card:     Card{Suit: Hearts, Rank: Nine},
+			expected: 9,
+		},
+		{
+			name:     "Eight value",
+			card:     Card{Suit: Hearts, Rank: Eight},
+			expected: 8,
+		},
+		{
+			name:     "Seven value",
+			card:     Card{Suit: Hearts, Rank: Seven},
+			expected: 7,
+		},
+		{
+			name:     "Six value",
+			card:     Card{Suit: Hearts, Rank: Six},
+			expected: 6,
+		},
+		{
+			name:     "Five value",
+			card:     Card{Suit: Hearts, Rank: Five},
 			expected: 5,
 		},
 		{
-			name:     "Face card value",
-			card:     Card{Suit: Clubs, Rank: King},
-			expected: 10,
+			name:     "Four value",
+			card:     Card{Suit: Hearts, Rank: Four},
+			expected: 4,
+		},
+		{
+			name:     "Three value",
+			card:     Card{Suit: Hearts, Rank: Three},
+			expected: 3,
+		},
+		{
+			name:     "Two value",
+			card:     Card{Suit: Hearts, Rank: Two},
+			expected: 2,
+		},
+		{
+			name:     "Invalid rank value",
+			card:     Card{Suit: Hearts, Rank: "InvalidRank"},
+			expected: 0,
 		},
 	}
 
@@ -92,7 +162,7 @@ func TestCardValue(t *testing.T) {
 	}
 }
 
-// TestIsFaceCard tests the IsFaceCard() method
+// TestIsFaceCard tests face card detection
 func TestIsFaceCard(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -105,13 +175,28 @@ func TestIsFaceCard(t *testing.T) {
 			expected: true,
 		},
 		{
+			name:     "Queen is face card",
+			card:     Card{Suit: Hearts, Rank: Queen},
+			expected: true,
+		},
+		{
+			name:     "Jack is face card",
+			card:     Card{Suit: Hearts, Rank: Jack},
+			expected: true,
+		},
+		{
 			name:     "Ace is not face card",
 			card:     Card{Suit: Hearts, Rank: Ace},
 			expected: false,
 		},
 		{
-			name:     "Number is not face card",
-			card:     Card{Suit: Hearts, Rank: Five},
+			name:     "Ten is not face card",
+			card:     Card{Suit: Hearts, Rank: Ten},
+			expected: false,
+		},
+		{
+			name:     "Two is not face card",
+			card:     Card{Suit: Hearts, Rank: Two},
 			expected: false,
 		},
 	}
@@ -126,7 +211,7 @@ func TestIsFaceCard(t *testing.T) {
 	}
 }
 
-// TestIsAce tests the IsAce() method
+// TestIsAce tests ace detection
 func TestIsAce(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -143,6 +228,11 @@ func TestIsAce(t *testing.T) {
 			card:     Card{Suit: Hearts, Rank: King},
 			expected: false,
 		},
+		{
+			name:     "Two is not ace",
+			card:     Card{Suit: Hearts, Rank: Two},
+			expected: false,
+		},
 	}
 
 	for _, test := range tests {
@@ -155,17 +245,46 @@ func TestIsAce(t *testing.T) {
 	}
 }
 
-// TestCardString tests the String() method
+// TestCardString tests string representation
 func TestCardString(t *testing.T) {
-	card := Card{Suit: Hearts, Rank: Ace}
-	expected := "Ace of Hearts"
-	got := card.String()
-	if got != expected {
-		t.Errorf("Card.String() = %v, want %v", got, expected)
+	tests := []struct {
+		name     string
+		card     Card
+		expected string
+	}{
+		{
+			name:     "Ace of Hearts",
+			card:     Card{Suit: Hearts, Rank: Ace},
+			expected: "Ace of Hearts",
+		},
+		{
+			name:     "King of Spades",
+			card:     Card{Suit: Spades, Rank: King},
+			expected: "King of Spades",
+		},
+		{
+			name:     "Ten of Diamonds",
+			card:     Card{Suit: Diamonds, Rank: Ten},
+			expected: "Ten of Diamonds",
+		},
+		{
+			name:     "Two of Clubs",
+			card:     Card{Suit: Clubs, Rank: Two},
+			expected: "Two of Clubs",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			got := test.card.String()
+			if got != test.expected {
+				t.Errorf("Card.String() = %v, want %v", got, test.expected)
+			}
+		})
 	}
 }
 
-// TestCardShortString tests the ShortString() method
+// TestCardShortString tests short string representation
 func TestCardShortString(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -178,9 +297,19 @@ func TestCardShortString(t *testing.T) {
 			expected: "A♥",
 		},
 		{
+			name:     "King of Spades",
+			card:     Card{Suit: Spades, Rank: King},
+			expected: "K♠",
+		},
+		{
 			name:     "Ten of Diamonds",
 			card:     Card{Suit: Diamonds, Rank: Ten},
 			expected: "10♦",
+		},
+		{
+			name:     "Two of Clubs",
+			card:     Card{Suit: Clubs, Rank: Two},
+			expected: "2♣",
 		},
 	}
 

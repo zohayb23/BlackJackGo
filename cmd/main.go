@@ -17,7 +17,7 @@ func clearScreen() {
 
 // getPlayerName prompts for and returns the player's name
 func getPlayerName() string {
-	reader := bufio.NewReader(os.Stdin)
+	reader := bufio.NewReader(os.Stdin) //bufio is a package that provides buffered I/O. It's used to read input from the user.
 	fmt.Print("\nEnter your name: ")
 	name, _ := reader.ReadString('\n')
 	return strings.TrimSpace(name)
@@ -32,7 +32,7 @@ func getPlayerInput() string {
 }
 
 // displayGameState shows the current state of the game
-func displayGameState(g *game.Game) {
+func displayGameState(g *game.Game) { //*
 	clearScreen()
 	fmt.Println("\n=== BLACKJACK ===")
 	fmt.Println(g.String())

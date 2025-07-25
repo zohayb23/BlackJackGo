@@ -120,6 +120,41 @@ Key Terms:
 - fmt.Errorf
 - error propagation
 
+BLANK IDENTIFIER (_)
+-------------------
+Definition: The underscore (_) is a special identifier in Go called the blank identifier. 
+It's used to explicitly ignore values that must be received but won't be used.
+
+Common Uses:
+1. Map lookups:
+   value, ok := myMap[key]     // Get both value and existence
+   _, ok := myMap[key]         // Only care about existence
+
+2. Multiple return values:
+   result, err := someFunction()  // Get both result and error
+   _, err := someFunction()       // Only care about error
+
+3. Range loops:
+   for i, v := range slice {}    // Get both index and value
+   for _, v := range slice {}    // Only care about value
+
+4. Import side effects:
+   import _ "package/name"       // Import for side effects only
+
+Example from our code:
+```go
+if _, ok := suitSymbols[suit]; !ok {
+    return Card{}, fmt.Errorf("invalid suit: %s", suit)
+}
+```
+Here we only care if the suit exists in our map, not what symbol it maps to.
+
+Key Points:
+- Helps avoid compiler errors for unused variables
+- Makes code intention clear - explicitly showing we're ignoring values
+- Common in Go idioms and patterns
+- Can be used in multiple places in the same statement
+
 5. TESTING
 ----------
 
@@ -210,3 +245,50 @@ PROGRESS TRACKER
 [✓] Command-line Interface
 
 This document will continue to be updated as we add more features and learn new concepts. 
+
+ESSENTIAL GO COMMANDS
+-------------------
+Here are the most important Go commands you'll need:
+
+1. Running the Program:
+   go run cmd/main.go               // Run the main program
+   go build cmd/main.go            // Build an executable
+   ./main                          // Run the built executable
+
+2. Testing Commands:
+   go test ./...                   // Run all tests in all packages
+   go test ./internal/deck         // Run tests in specific package
+   go test -v ./...               // Verbose output (shows each test)
+   go test -cover ./...           // Show test coverage
+   go test -coverprofile=coverage.out ./...  // Generate coverage file
+   go tool cover -html=coverage.out          // View coverage in browser
+
+3. Module Commands:
+   go mod init blackjack          // Initialize a new module
+   go mod tidy                    // Clean up dependencies
+   go get package_name            // Add a new dependency
+   go list -m all                 // List all dependencies
+
+4. Code Quality:
+   go fmt ./...                   // Format all code
+   go vet ./...                   // Check for subtle problems
+   go doc package_name            // View package documentation
+
+5. Common Flags:
+   -v        // Verbose output
+   -race     // Check for race conditions
+   -bench    // Run benchmarks
+   -timeout  // Set test timeout
+
+Example Usage in Our Project:
+1. To run the game:
+   go run cmd/main.go
+
+2. To test everything:
+   go test -v ./...
+
+3. To check coverage:
+   go test -cover ./...
+
+4. To format all code:
+   go fmt ./... 

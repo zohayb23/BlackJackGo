@@ -1,6 +1,6 @@
 # BlackJack in Go
 
-A command-line implementation of the BlackJack card game using Go. This project serves as a learning exercise for Go programming concepts and best practices.
+A command-line implementation of the BlackJack card game using Go.
 
 ## Project Overview
 
@@ -11,8 +11,6 @@ This BlackJack implementation showcases:
 - Test-driven development
 - Command-line interface design
 - Professional development practices
-
-## Current Progress
 
 ### Completed Features ✓
 

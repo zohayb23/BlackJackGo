@@ -11,6 +11,7 @@ type PlayerState int
 
 const (
 	// Different states a player can be in during the game
+	//iota is a special keyword that automatically assigns sequential integer values to constants starting from 0
 	Playing   PlayerState = iota // Player is still making decisions
 	Standing                     // Player has chosen to stand
 	Busted                       // Player's hand value exceeded 21
@@ -97,4 +98,20 @@ func (p *Player) String() string {
 
 	return fmt.Sprintf("Player: %s\nHand: %s\nValue: %d\nState: %v",
 		p.Name, handStr, p.GetHandValue(), p.State)
+}
+
+// String returns a string representation of the PlayerState
+func (s PlayerState) String() string {
+	switch s {
+	case Playing:
+		return "Playing"
+	case Standing:
+		return "Standing"
+	case Busted:
+		return "Busted"
+	case BlackJack:
+		return "BlackJack"
+	default:
+		return "Unknown" // Default case if the state is not one of the above	
+	}
 }
